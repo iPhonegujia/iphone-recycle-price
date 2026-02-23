@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>iPhone回收估价</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+body{background:#f5f7fa;padding:10px;max-width:500px;margin:0 auto}
+.main{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.08)}
+.head{background:#007aff;color:#fff;text-align:center;padding:18px 10px}
+.head h1{font-size:19px;margin-bottom:4px}
+.head p{font-size:12px;opacity:.9}
+.block{padding:14px 16px;border-bottom:1px solid #f0f0f0}
+.title{font-size:15px;font-weight:600;margin-bottom:10px;color:#222}
+.row{display:flex;gap:8px;margin-bottom:8px}
+.col{flex:1}
+label{font-size:12px;color:#666;display:block;margin-bottom:4px}
+select{width:100%;padding:9px 10px;border:1px solid #ddd;border-radius:10px;background:#fff;font-size:14px}
+.btn{background:#007aff;color:#fff;text-align:center;padding:16px;font-size:16px;font-weight:600;margin:16px;border-radius:14px}
+.tel{text-align:center;font-size:15px;font-weight:600;color:#222;margin:-8px 16px 16px}
+.result{background:#eaf5ff;margin:0 16px 16px;padding:16px;border-radius:14px;text-align:center;display:none}
+.price{font-size:24px;font-weight:700;color:#007aff}
+.tip{font-size:12px;color:#666;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="main">
+  <div class="head">
+    <h1>📱 iPhone 17 Pro/Max 回收估价</h1>
+    <p>自助估价 · 价格透明</p >
+  </div>
+
+  <div class="block">
+    <div class="title">基础信息</div>
+    <div class="row">
+      <div class="col"><label>机型</label><select id="model" onchange="resetAllOptions()">
+        <option value="17pm">17 ProMax</option>
+        <option value="17pro">17 Pro</option>
+      </select></div>
+      <div class="col"><label>内存</label><select id="storage">
+        <option value="256">256G</option>
+        <option value="512">512G</option>
+      </select></div>
+      <div class="col"><label>颜色</label><select id="color">
+        <option value="normal">橙/白</option>
+        <option value="blue">蓝色</option>
+      </select></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="title">摄像头 & 面容</div>
+    <div class="row">
+      <div class="col"><label>前置</label><select id="front_cam">
+        <option value="0">好</option><option value="1">坏</option>
+      </select></div>
+      <div class="col"><label>后置</label><select id="back_cam">
+        <option value="0">好</option><option value="1">坏</option>
+      </select></div>
+      <div class="col"><label>面容</label><select id="face">
+        <option value="0">有</option><option value="1">无</option>
+      </select></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="title">外观</div>
+    <div class="row">
+      <div class="col"><label>屏幕</label><select id="screen">
+        <option value="liang">靓</option>
+        <option value="hua">花</option>
+        <option value="neibao">内爆</option>
+        <option value="neibao_ac">内爆AC</option>
+      </select></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="title">内部配件</div>
+    <div class="row">
+      <div class="col"><label>无线充电</label><select id="wireless"><option value="good">好</option><option value="bad">坏</option></select></div>
+      <div class="col"><label>闪光灯</label><select id="flash"><option value="0">好</option><option value="1">坏</option></select></div>
+      <div class="col"><label>尾插</label><select id="dock"><option value="0">好</option><option value="1">坏</option></select></div>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <div class="col"><label>气压计</label><select id="barometer"><option value="0">好</option><option value="1">坏</option></select></div>
+      <div class="col"><label>卡槽</label><select id="sim"><option value="0">好</option><option value="1">坏</option></select></div>
+      <div class="col"><label>喇叭震动</label><select id="speaker"><option value="0">好</option><option value="1">坏</option></select></div>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <div class="col"><label>电池护板</label><select id="battery_shield"><option value="0">好</option><option value="1">坏</option></select></div>
+      <div class="col"><label>听筒</label><select id="ear"><option value="0">好</option><option value="1">坏</option></select></div>
+      <div class="col"><label>电池</label><select id="battery"><option value="0">好</option><option value="1">坏</option></select></div>
+    </div>
+  </div>
+
+  <div class="btn" onclick="calc()">立即计算回收价</div>
+  <div class="tel">📞 回收热线：13056202777</div>
+
+  <div class="result" id="result">
+    <div class="price" id="finalPrice"></div>
+    <div class="tip">屏幕好/花均不加价，另询价</div>
+  </div>
+</div>
+
+<script>
+function resetAllOptions() {
+  document.getElementById('storage').selectedIndex = 0;
+  document.getElementById('color').selectedIndex = 0;
+  document.getElementById('front_cam').selectedIndex = 0;
+  document.getElementById('back_cam').selectedIndex = 0;
+  document.getElementById('face').selectedIndex = 0;
+  document.getElementById('screen').selectedIndex = 0;
+  document.getElementById('wireless').selectedIndex = 0;
+  document.getElementById('flash').selectedIndex = 0;
+  document.getElementById('dock').selectedIndex = 0;
+  document.getElementById('barometer').selectedIndex = 0;
+  document.getElementById('sim').selectedIndex = 0;
+  document.getElementById('speaker').selectedIndex = 0;
+  document.getElementById('battery_shield').selectedIndex = 0;
+  document.getElementById('ear').selectedIndex = 0;
+  document.getElementById('battery').selectedIndex = 0;
+  document.getElementById('result').style.display = 'none';
+}
+
+function calc(){
+  const m=document.getElementById('model').value
+  const s=document.getElementById('storage').value
+  const c=document.getElementById('color').value
+  const fc=+document.getElementById('front_cam').value
+  const bc=+document.getElementById('back_cam').value
+  const f=+document.getElementById('face').value
+  const screen=document.getElementById('screen').value
+  const wireless=document.getElementById('wireless').value
+  const flash=+document.getElementById('flash').value
+  const dock=+document.getElementById('dock').value
+  const baro=+document.getElementById('barometer').value
+  const sim=+document.getElementById('sim').value
+  const spk=+document.getElementById('speaker').value
+  const bsh=+document.getElementById('battery_shield').value
+  const ear=+document.getElementById('ear').value
+  const bat=+document.getElementById('battery').value
+
+  let base=0;
+  // 核心规则：面容正常，且至少一个摄像头是好的
+  if (f === 0 && (fc === 0 || bc === 0)) {
+    if(m === '17pm') {
+      base=s === '256' ? 4100 : 5000;
+    } else if(m === '17pro') {
+      base=s === '256' ? 3700 : 4500;
+    }
+  }
+  // 兜底规则：面容无，或两个摄像头都坏
+  else {
+    if(m === '17pm') base=s === '256' ? (f?3200:3600) : (f?4100:4500);
+    if(m === '17pro') base=s === '256' ? (f?3100:3300) : (f?3900:4200);
+  }
+
+  // 屏幕AC加价
+  let sa=0;
+  if (m === '17pm' && screen === 'neibao_ac') sa=200;
+  base += sa;
+
+  // 无线充电与颜色扣价
+  if(wireless === 'bad') base -= m === '17pm' ? 200 : 145;
+  if(c === 'blue') base -= 200;
+
+  // 其他故障成本扣除
+  let cost=0;
+  cost += flash ? (m === '17pm' ? 75 : 70) : 0;
+  cost += baro ? (m === '17pm' ? 48 : 30) : 0;
+  cost += dock ? 330 : 0;
+  cost += sim ? 25 : 0;
+  cost += spk ? 40 : 0;
+  cost += bsh ? 70 : 0;
+  cost += ear ? 30 : 0;
+  cost += bat ? 300 : 0;
+
+  let final=Math.max(base-cost, 0);
+  document.getElementById('result').style.display = 'block';
+  document.getElementById('finalPrice').innerText = '¥' + final;
+}
+</script>
+</body>
+</html>
